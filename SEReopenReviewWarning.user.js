@@ -80,7 +80,7 @@ async function getLastReopen(questionId) {
       if (nextRow) {
       	const nextVerbNode = nextRow.querySelector('.event-verb');
         if (nextVerbNode) {
-          const nextVerb = nextVerbNode.textContent;
+          const nextVerb = nextVerbNode.textContent.trim();
           if (nextVerb === 'completed') {
             lastReopen.isCompleted = true;
           }
@@ -105,7 +105,7 @@ async function main() {
       const noticeHeading = document.createElement('span');
       const noticeBody = document.createElement('span');
       
-      noticeHeading.innerHTML = 'A ' + (lastReopen.isCompleted ? 'completed' : 'pending') + ' <a href="' + lastReopen.reviewUrl + '" target="_blank">review request</a> has been found';
+      noticeHeading.innerHTML = 'A ' + (lastReopen.isCompleted ? 'completed' : 'pending') + ' <a href="' + lastReopen.reviewUrl + '" target="_blank">reopen review</a> has been found';
       
       if (lastReopen.isCompleted) {
       	noticeBody.textContent = 'Reopen review has been completed. This question will not appear in the Reopen Review queue again. If you believe it should be reopened, please use other means to have it reconsidered.';
