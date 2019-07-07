@@ -10,7 +10,7 @@
 // @match         *://*.stackexchange.com/*
 // @match         *://*.stackoverflow.com/*
 // @match         *://*.superuser.com/*
-// @version       1.0.1
+// @version       1.1.0
 // @grant         unsafeWindow
 // @run-at        document-end
 // ==/UserScript==
@@ -23,11 +23,19 @@ function isClosed() {
     return document.querySelector('.close-status-suffix') !== null;
 }
 
+function isLoggedIn() {
+    return document.querySelector('.user-logged-out') === null; // or inverse of .user-logged-in
+}
+
+function hasReviewPrivileges() {
+    return document.querySelector('.review-button-item') !== null;
+}
+
 function getQuestionId() {
     return document.getElementById('question').dataset.questionid;
 }
 
-function addNotice(noticeHeading, noticeBody) {
+function addNotice(noticeHeading, noticeBody, extraNotice) {
     const existingNotice = document.querySelector('.special-status>.question-status');
 
     const newNotice = document.createElement('div');
@@ -40,6 +48,11 @@ function addNotice(noticeHeading, noticeBody) {
 
     const statusBody = statusWrapper.appendChild(document.createElement('p'));
     statusBody.appendChild(noticeBody);
+    
+    if (extraNotice) {
+        const statusExtra = statusWrapper.appendChild(document.createElement('p'));
+        statusExtra.appendChild(extraNotice);
+    }
 
     existingNotice.parentNode.insertBefore(newNotice, existingNotice.nextSibling);
 }
@@ -104,16 +117,30 @@ async function main() {
         if (lastReopen) {
             const noticeHeading = document.createElement('span');
             const noticeBody = document.createElement('span');
+            const createExtraNotice = function() {
+                const el = document.createElement('span');
+                el.style.fontSize = 'smaller';
+                return el;
+            };
+            let noticeExtra = null;
 
-            noticeHeading.innerHTML = 'A ' + (lastReopen.isCompleted ? 'completed' : 'pending') + ' <a href="' + lastReopen.reviewUrl + '" target="_blank">reopen review</a> has been found';
+            noticeHeading.innerHTML = 'A ' + (lastReopen.isCompleted ? 'completed ') + '<a href="' + lastReopen.reviewUrl + '" target="_blank">reopen review</a> has been found';
 
             if (lastReopen.isCompleted) {
                 noticeBody.textContent = 'Reopen review has been completed. This question will not appear in the Reopen Review queue again. If you believe it should be reopened, please use other means to have it reconsidered.';
             } else {
                 noticeBody.textContent = 'Any existing votes will not be reset by future edits.';
             }
+                                              
+            if (!isLoggedIn()) {
+                noticeExtra = createExtraNotice();
+                noticeExtra.textContent = 'Status could not be determined because you are not logged in.';
+            } else if (!hasReviewPrivileges()) {
+                noticeExtra = createExtraNotice();
+                noticeExtra.textContent = 'Status could not be determined because you do not have review privileges.';
+            }
 
-            addNotice(noticeHeading, noticeBody);
+            addNotice(noticeHeading, noticeBody, noticeExtra);
         }
     }
 }
