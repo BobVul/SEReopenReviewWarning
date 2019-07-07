@@ -23,6 +23,10 @@ function isClosed() {
     return document.querySelector('.close-status-suffix') !== null;
 }
 
+function getQuestionId() {
+    return document.getElementById('question').dataset.questionid;
+}
+
 function addNotice(noticeHeading, noticeBody) {
     const existingNotice = document.querySelector('.special-status>.question-status');
 
@@ -38,10 +42,6 @@ function addNotice(noticeHeading, noticeBody) {
     statusBody.appendChild(noticeBody);
 
     existingNotice.parentNode.insertBefore(newNotice, existingNotice.nextSibling);
-}
-
-function getQuestionId() {
-    return document.getElementById('question').dataset.questionid;
 }
 
 async function getTimelineDocument(questionId) {
