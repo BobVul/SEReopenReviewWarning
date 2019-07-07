@@ -10,7 +10,7 @@
 // @match         *://*.stackexchange.com/*
 // @match         *://*.stackoverflow.com/*
 // @match         *://*.superuser.com/*
-// @version       1.1.0
+// @version       1.1.1
 // @grant         unsafeWindow
 // @run-at        document-end
 // ==/UserScript==
