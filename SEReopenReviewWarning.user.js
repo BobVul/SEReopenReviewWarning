@@ -124,7 +124,7 @@ async function main() {
             };
             let noticeExtra = null;
 
-            noticeHeading.innerHTML = 'A ' + (lastReopen.isCompleted ? 'completed ') + '<a href="' + lastReopen.reviewUrl + '" target="_blank">reopen review</a> has been found';
+            noticeHeading.innerHTML = 'A ' + (lastReopen.isCompleted ? 'completed ' : '') + '<a href="' + lastReopen.reviewUrl + '" target="_blank">reopen review</a> has been found';
 
             if (lastReopen.isCompleted) {
                 noticeBody.textContent = 'Reopen review has been completed. This question will not appear in the Reopen Review queue again. If you believe it should be reopened, please use other means to have it reconsidered.';
